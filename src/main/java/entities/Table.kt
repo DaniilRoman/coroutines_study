@@ -16,4 +16,8 @@ class Table(private val total: Int,private var available: Int = total) {
     fun onLeave(peopleGroup: PeopleGroup) {
         available += peopleGroup.count
     }
+
+    override fun toString(): String {
+        return "Table: {total: $total, available: $available}"
+    }
 }
