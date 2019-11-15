@@ -10,11 +10,12 @@ class Table(private val total: Int,private var available: Int = total) {
     }
 
     fun onAccept(peopleGroup: PeopleGroup) {
-        available -= peopleGroup.count
+        available = available - peopleGroup.count
+        print(available)
     }
 
     fun onLeave(peopleGroup: PeopleGroup) {
-        available += peopleGroup.count
+        available = available + peopleGroup.count
     }
 
     override fun toString(): String {

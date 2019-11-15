@@ -20,9 +20,9 @@ fun main(args: Array<String>) {
 }
 
 private fun addPeoplesTo(queue: PeopleGroupQueue) {
-    listOf(PeopleGroup(4, 3, 3),
-            PeopleGroup(2, 2, 3),
-            PeopleGroup(3, 2, 3))
+    listOf(PeopleGroup(4, 3),
+            PeopleGroup(2, 2),
+            PeopleGroup(3, 2))
             .forEach( queue::peopleInit)
 }
 

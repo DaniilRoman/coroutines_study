@@ -17,7 +17,7 @@ fun generatePeoples(n: Int): List<PeopleGroup> {
 fun generatePeople(): PeopleGroup {
     val count = Random.nextInt(1, 5)
     val threshold = Random.nextInt(5, 15)
-    return PeopleGroup(count, threshold, threshold)
+    return PeopleGroup(count, threshold)
 }
 
 fun generateTables(n: Int): List<Table> {

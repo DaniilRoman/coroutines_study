@@ -1,6 +1,7 @@
 package entities
 
 import cervices.PeopleGroupQueue
+import utils.log
 import java.util.concurrent.atomic.AtomicInteger
 
 object IdGen {
@@ -11,13 +12,13 @@ object IdGen {
     }
 }
 
-class PeopleGroup(val count: Int, var timeWaiting: Int, private val threshold: Int) {
+class PeopleGroup(val count: Int, var timeWaiting: Int, private val threshold: Int = 0) {
     private val clock: Thread by lazy {
         Thread {
             while(true) {
                 onReject()
                 try {
-                    Thread.sleep(300)
+                    Thread.sleep(500)
                 } catch (ex: InterruptedException) {
                     break
                 }
@@ -25,7 +26,7 @@ class PeopleGroup(val count: Int, var timeWaiting: Int, private val threshold: I
         }
     }
 
-    private val id: Int by lazy {
+    val id: Int by lazy {
         IdGen.getId()
     }
 
@@ -44,6 +45,7 @@ class PeopleGroup(val count: Int, var timeWaiting: Int, private val threshold: I
     }
 
     fun onReject() {
+        log("WAIT: $id ::: $timeWaiting")
         timeWaiting--
         checkOnLeave()
     }
