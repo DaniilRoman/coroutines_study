@@ -1,32 +1,49 @@
-import cervices.ManagementService
-import cervices.PeopleGroupQueue
-import cervices.Restaurant
+import entities.OrderResolution
+import services.ManagementService
+import services.Restaurant
 import entities.PeopleGroup
 import entities.Table
-import utils.generatePeoples
-import utils.generateTables
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import services.OrderChecker
+import services.OrderStore
 
-fun main(args: Array<String>) {
-    val restaurant = Restaurant(listOf(Table(4), Table(3)))
+fun main(args: Array<String>): Unit = runBlocking {
+    val orderStore = OrderStore()
+    val peopleQueue = Channel<PeopleGroup>()
+    val tableLeave = Channel<OrderResolution>()
+
+    val restaurant = Restaurant(listOf(Table(4), Table(3)), tableLeave)
     println(restaurant)
+    async {
+        restaurant.handleTableLeave()
+    }
 
-    val queue = PeopleGroupQueue()
 
-    queue.start()
 
-    addPeoplesTo(queue)
+    async {
+        addPeoplesTo(peopleQueue)
+    }
 
-    ManagementService(restaurant, queue).start()
+    async {
+        ManagementService(restaurant, peopleQueue, orderStore).handle()
+    }
+
+    val scheduler = OrderChecker(orderStore, peopleQueue, tableLeave)
+    scheduler.scheduleAccepted()
+    scheduler.scheduleRejected()
+
+    println("Done")
 }
 
-private fun addPeoplesTo(queue: PeopleGroupQueue) {
+private suspend fun addPeoplesTo(queue: Channel<PeopleGroup>) {
     listOf(PeopleGroup(4, 3),
             PeopleGroup(2, 2),
             PeopleGroup(3, 2))
-            .forEach( queue::peopleInit)
+            .forEach { group -> queue.send(group) }
 }
-
-
 
 
 

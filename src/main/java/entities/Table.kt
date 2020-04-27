@@ -1,6 +1,12 @@
 package entities
 
+import java.util.*
+
 class Table(private val total: Int,private var available: Int = total) {
+    val id: UUID by lazy {
+        IdGen.getId()
+    }
+
     fun isContainStrict(n: Int): Boolean {
         return available == total && available >= n
     }
@@ -11,7 +17,6 @@ class Table(private val total: Int,private var available: Int = total) {
 
     fun onAccept(peopleGroup: PeopleGroup) {
         available = available - peopleGroup.count
-        print(available)
     }
 
     fun onLeave(peopleGroup: PeopleGroup) {
@@ -19,6 +24,6 @@ class Table(private val total: Int,private var available: Int = total) {
     }
 
     override fun toString(): String {
-        return "Table: {total: $total, available: $available}"
+        return "Table: $total:$available"
     }
 }
